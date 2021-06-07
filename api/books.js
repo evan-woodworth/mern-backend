@@ -2,17 +2,23 @@
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const passport = require('passport');
-const JWT_SECRET = process.env.JWT_SECRET;
 
 // Models
-const { } = require('../models');
+const { Book } = require('../models');
 
 // Controllers
 const index = async (req, res) => {
+    console.log("Inside of /api/books");
+    try {
+        const allBooks = await Book.find({});
 
+        res.json({ books: allBooks });
+    } catch (error) {
+        console.log("Error inside of /api/books")
+        console.log(error);
+        return res.status(400).json({message:'Books not found, please try again.'});
+    }
 }
 
 const show = async (req, res) => {
@@ -37,10 +43,10 @@ router.get('/test', (req, res) => {
     res.json({ msg: 'Books endpoint OK!'});
 });
 
-router.get('/books', index);
-router.get('/books/:id', show);
-router.post('/books', passport.authenticate('jwt', { session: false }), create);
-router.put('/books/:id', passport.authenticate('jwt', { session: false }), update);
-router.delete('/books/:id', passport.authenticate('jwt', { session: false }), deleteBook);
+router.get('/', index);
+// router.get('/books/:id', show);
+// router.post('/books', passport.authenticate('jwt', { session: false }), create);
+// router.put('/books/:id', passport.authenticate('jwt', { session: false }), update);
+// router.delete('/books/:id', passport.authenticate('jwt', { session: false }), deleteBook);
 
 module.exports = router;

@@ -122,6 +122,5 @@ router.post('/login', login);
 
 // GET api/users/profile (Private)
 router.get('/profile', passport.authenticate('jwt', { session: false }), profile);
-// router.get('/all-users', fetchUsers);
 
 module.exports = router; 
