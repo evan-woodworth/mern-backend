@@ -15,6 +15,40 @@ const test = async (req, res) => {
     res.json({ message: 'User endpoint OK!'});
 }
 
+const signup = async (req,res) => {
+    console.log('--- INSIDE OF SIGNUP ---');
+    console.log('req.body ==>', req.body);
+    const {name, email, password} = req.body;
+
+    try {
+        // see if user exists in database, by email
+        const user = await User.findOne({ email });
+
+        // if user exists, return 400 error and message
+        if (user) {
+            return res.status(400).json({message: 'Email already exists'});
+        } else {
+            console.log('creating new user');
+            let saltRounds = 12;
+            let salt = await bcrypt.genSalt(saltRounds);
+            let hash = await bcrypt.hash(password, salt);
+            const newUser = new User({
+                name,
+                email,
+                password: hash
+            })
+
+            const savedNewUser = await newUser.save();
+            
+            res.json(savedNewUser);
+        }
+    } catch (error) {
+        console.log('Error inside of /api/users/signup');
+        console.log(error);
+        return res.status(400).json({message: 'Error occured, please try again...'})
+    }
+}
+
 // routes
 router.get('/test', test);
 
@@ -25,7 +59,7 @@ router.get('/test', test);
 // router.post('/login', login);
 
 // GET api/users/current (Private)
-router.get('/profile', passport.authenticate('jwt', { session: false }), profile);
+// router.get('/profile', passport.authenticate('jwt', { session: false }), profile);
 // router.get('/all-users', fetchUsers);
 
 module.exports = router; 
