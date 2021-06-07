@@ -45,7 +45,7 @@ const signup = async (req,res) => {
     } catch (error) {
         console.log('Error inside of /api/users/signup');
         console.log(error);
-        return res.status(400).json({message: 'Error occured, please try again...'})
+        return res.status(400).json({message: 'Error occurred, please try again...'})
     }
 }
 
@@ -53,7 +53,7 @@ const signup = async (req,res) => {
 router.get('/test', test);
 
 // POST api/users/register (Public)
-// router.post('/signup', signup);
+router.post('/signup', signup);
 
 // POST api/users/login (Public)
 // router.post('/login', login);
